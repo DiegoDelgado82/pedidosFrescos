@@ -234,6 +234,35 @@ function exportarPedidoExcel() {
 }
 
 
+function exportarPedidoTxt() {
+  let pedidoTxt = "EAN\tCantidad\tDescripción\n"; // Encabezado del archivo de texto
+  for (let i = 0; i < 9999; i++) {
+      if (document.getElementById("cant" + i) && document.getElementById("cant" + i).value != 0) {
+          let ean = document.getElementById("ean" + i).textContent;
+          let cant = document.getElementById("cant" + i).value;
+          let desc = document.getElementById("desc" + i).textContent;
+          pedidoTxt += ean + "\t" + cant + "\t" + desc + "\n"; // Cambio en el orden de los campos
+      }
+  }
+
+  let hoy = new Date();
+  let dia = hoy.getDate();
+  let mes = hoy.getMonth() + 1;
+  let nombreProveedor = document.getElementById("selectProveedores").value; // Obtener el nombre del proveedor seleccionado
+  let nombreArchivo = "pedido_" + nombreProveedor + "_" + dia + "_" + mes + ".txt";
+
+  let blob = new Blob([pedidoTxt], { type: 'text/plain' });
+  if (window.navigator.msSaveBlob) {
+      // Para IE
+      window.navigator.msSaveBlob(blob, nombreArchivo);
+  } else {
+      // Para otros navegadores
+      let link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = nombreArchivo;
+      link.click();
+  }
+}
 
 
 
