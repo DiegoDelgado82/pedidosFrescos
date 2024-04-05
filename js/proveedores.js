@@ -197,6 +197,41 @@ function cargarPedido()
 
 } 
 
+function exportarPedidoExcel() {
+  let pedidoTable = "<table><tr><th style='mso-number-format:\"0\";'>EAN</th><th>Descripción</th><th>Cantidad</th></tr>";
+  for (let i = 0; i < 9999; i++) {
+      if (document.getElementById("cant" + i) && document.getElementById("cant" + i).value != 0) {
+          let ean = document.getElementById("ean" + i).textContent;
+          let desc = document.getElementById("desc" + i).textContent;
+          let cant = document.getElementById("cant" + i).value;
+          pedidoTable += "<tr><td style='mso-number-format:\"0\";'>" + ean + "</td><td>" + desc + "</td><td>" + cant + "</td></tr>";
+      }
+  }
+  pedidoTable += "</table>";
+
+  let hoy = new Date();
+  let dia = hoy.getDate();
+  let mes = hoy.getMonth() + 1;
+  let nombreProveedor = document.getElementById("selectProveedores").value; // Obtener el nombre del proveedor seleccionado
+  let nombreArchivo = "pedido_" + nombreProveedor + "_" + dia + "_" + mes + ".xls";
+
+  let excelContent = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>";
+  excelContent += "<head><meta charset='UTF-8'><meta name=ProgId content=Excel.Sheet>";
+  excelContent += "<style>table,th,td{border:1px solid black;border-collapse:collapse;}</style>";
+  excelContent += "</head><body>" + pedidoTable + "</body></html>";
+
+  let blob = new Blob([excelContent], { type: 'application/vnd.ms-excel' });
+  if (window.navigator.msSaveBlob) {
+      // Para IE
+      window.navigator.msSaveBlob(blob, nombreArchivo);
+  } else {
+      // Para otros navegadores
+      let link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = nombreArchivo;
+      link.click();
+  }
+}
 
 
 
